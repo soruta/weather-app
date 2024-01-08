@@ -11,11 +11,14 @@ import './/style.scss';
 
 const Item = ({ location, date, icon }) => {
     const dispatch = useDispatch();
+
+    // Загрузка лайкнутых карточек из localStorage или создание пустого массива
     const [likedLocations, setLikedLocations] = useState(() => {
         const storedLocations = localStorage.getItem('likedLocations');
         return storedLocations ? JSON.parse(storedLocations) : [];
     });
-    
+
+    // Обработка нажатия на иконку "Лайк"
     const handleLike = (e, id) => {
         e.preventDefault();
         const existingIndex = likedLocations.findIndex((item) => item.id === id);
@@ -34,23 +37,32 @@ const Item = ({ location, date, icon }) => {
         }
     };
 
+    // Обработка нажатия на кнопку удаления карточки
     const handleDelete = (e) => {
         e.preventDefault();
-        dispatch(deleteItemFromCart(location?.params?.meta?.requestId));
+        const itemID = location.params.meta.requestId;
+
+        // Удаляем карточку из Redux store
+        dispatch(deleteItemFromCart(itemID));
+
+        // Удаляем карточку из localStorage и из likedLocations
+        const updatedLikedLocations = likedLocations.filter((item) => item.id !== location.params.payload.city.id);
+        setLikedLocations(updatedLikedLocations);
+        localStorage.setItem('likedLocations', JSON.stringify(updatedLikedLocations));
     };
 
     return (
         <div className="content">
-            { location?.params ? (
+            { location?.params?.payload ? (
                 <Link to={{
-                    pathname: `/details/${location?.params?.payload?.city?.name}`,
+                    pathname: `/details/${location.params.payload.city.name}`,
                     state: { location }
                 }}>
-                    <div id={location?.params?.payload?.city?.id} key={location?.params?.payload?.city?.id}>
+                    <div id={location.params.payload.city.id} key={location.params.payload.city.id}>
                         <div className="item">
                             <div className="item_top">
-                                <button onClick={(e) => handleLike(e, location?.params?.payload?.city?.id)} className="ico-btn">
-                                    { likedLocations.some((item) => item.id === location?.params?.payload?.city?.id) ? (
+                                <button onClick={(e) => handleLike(e, location.params.payload.city.id)} className="ico-btn">
+                                    { likedLocations.some((item) => item.id === location.params.payload.city.id) ? (
                                         <FcLike />
                                     ) : (
                                         <IoHeartOutline />
@@ -62,15 +74,15 @@ const Item = ({ location, date, icon }) => {
                                 <div className="location">
                                     <div className="location_icon">{icon}</div>
                                     <div>
-                                        <div className="location_city">{location?.params?.payload?.city?.name}, {location?.params?.payload?.city?.country}</div>
+                                        <div className="location_city">{location.params.payload.city.name}, {location.params.payload.city.country}</div>
                                         <div className="location_date">{date.getUTCDate()}/{date.getUTCMonth() + 1}/{date.getUTCFullYear()}</div>
                                     </div>
                                 </div>
                                 <div className="temp">
-                                    <div className="temp_num">{location.params.payload.list && parseInt(location.params.payload.list[0].main.temp)}</div>
+                                    <div className="temp_num">{parseInt(location.params.payload.list[0].main.temp)}</div>
                                     <div className="temp_icon"><TbTemperatureCelsius /></div>
                                 </div>
-                                <div className="temp_description">{location.params.payload.list && location.params.payload.list[0].weather[0].description}</div>
+                                <div className="temp_description">{location.params.payload.list[0].weather[0].description}</div>
                             </div>
                         </div>
                     </div>

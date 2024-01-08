@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchWeather } from '../../redux/cart/reducer';
 import { addItemToCart } from '../../redux/cart/reducer';
 import { BsCloudDrizzleFill } from 'react-icons/bs'
 import { IoSunny, IoRainy, IoCloudy, IoSnow, IoThunderstorm } from 'react-icons/io5'
@@ -33,13 +32,6 @@ export const getWeatherIcon = (weatherMain) => {
   }
 }
 
-const getIcon = (location) => {
-  if (location.params.payload.list) {
-    return location.params.payload.list[0].weather[0].main;
-  }
-  return null;
-};
-
 function CheckWeather() {
   const dispatch = useDispatch();
   const data = useSelector(state => state.cart.itemsInCart);
@@ -49,9 +41,20 @@ function CheckWeather() {
   useEffect(() => {
     const likedLocations = JSON.parse(localStorage.getItem('likedLocations')) || [];
     likedLocations.forEach((item) => {
-      dispatch(addItemToCart(item.location)); // Добавляем данные карточки в itemsInCart
+      const existingItem = data.find((location) => location.params.payload.city.id === item.id);
+      if (!existingItem) {
+        dispatch(addItemToCart(item.location)); // Добавляем данные карточки в itemsInCart, если их еще нет
+      }
     });
-  }, [dispatch]);
+  }, [data, dispatch]);
+
+  // Функция для получения типа погоды
+  const getIcon = (location) => {
+    if (location.params.payload.list) {
+      return location.params.payload.list[0].weather[0].main;
+    }
+    return null;
+  };
 
   return (
     <div className="app">

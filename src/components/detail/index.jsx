@@ -17,6 +17,7 @@ const LocationDetails = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [randomImage, setRandomImage] = useState('');
 
+  // Получение случайного изображения города при загрузке страницы
   useEffect(() => {
     const getRandomImage = async () => {
       const cityImages = [
@@ -41,6 +42,7 @@ const LocationDetails = () => {
     getRandomImage();
   }, []);
 
+  // Получение данных о погоде при загрузке страницы
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,6 +57,7 @@ const LocationDetails = () => {
     fetchData();
   }, [dispatch, cityName]);
 
+  // Вывод спиннера загрузки при ожидании данных о погоде
   if (loading) {
     return (
       <div className='spin'>
@@ -63,8 +66,10 @@ const LocationDetails = () => {
     );
   }
 
+  // Получение и обработка данных о погоде для отображения на странице
   const icon = getWeatherIcon(weatherData?.payload.list[0].weather[0].main);
 
+  // Фильтрация данных о погоде для отображения прогноза на сутки
   const filteredData = weatherData.payload.list.map((item, index) => {
     if (index % 2 === 0) {
       return item;
@@ -72,6 +77,7 @@ const LocationDetails = () => {
     return null;
   }).filter(item => item !== null);
   
+  // Формирование массива времени суток
   const dayWeather = Array.from({ length: 4 }, (_, index) => index + 1);
   const timesDay = [
     'Утро',
@@ -80,9 +86,8 @@ const LocationDetails = () => {
     'Ночь'
   ];
 
-  // Преобразование данных о погоде в массив значений температур
+  // Формирование массива значений температур
   const temperatures = weatherData.payload.list.map(item => item.main.temp);
-
   const minTemperature = Math.min(...temperatures);
   const maxTemperature = Math.max(...temperatures);
 

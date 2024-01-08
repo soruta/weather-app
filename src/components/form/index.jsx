@@ -10,11 +10,13 @@ function Form() {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
 
+  // Обработка изменения значения в поле ввода
   const handleInput = (e) => {
     setInputValue(e.target.value);
     setError('');
   };
 
+  // Обработка отправки формы поиска
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (inputValue.trim() === '') {
@@ -34,6 +36,7 @@ function Form() {
     setInputValue('');
   };
 
+  // Отображение ошибки в течение 2 секунд после ее возникновения
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
