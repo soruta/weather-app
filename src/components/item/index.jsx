@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { deleteItemFromCart } from "../../redux/cart/reducer";
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { deleteItemFromCart, toggleLikedLocation } from "../../redux/cart/reducer";
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { TbTemperatureCelsius } from 'react-icons/tb'
 import { IoHeartOutline, IoClose } from 'react-icons/io5'
@@ -11,44 +11,18 @@ import './/style.scss';
 
 const Item = ({ location, date, icon }) => {
     const dispatch = useDispatch();
+    const likedLocations = useSelector(state => state.cart.likedLocations); // Получаем список избранного из Redux
 
-    // Загрузка лайкнутых карточек из localStorage или создание пустого массива
-    const [likedLocations, setLikedLocations] = useState(() => {
-        const storedLocations = localStorage.getItem('likedLocations');
-        return storedLocations ? JSON.parse(storedLocations) : [];
-    });
-
-    // Обработка нажатия на иконку "Лайк"
-    const handleLike = (e, id) => {
+    // Функция добавления/удаления карточки из избранного
+    const handleLike = (e) => {
         e.preventDefault();
-        const existingIndex = likedLocations.findIndex((item) => item.id === id);
-    
-        if (existingIndex === -1) {
-            const newLikedLocations = [
-                ...likedLocations,
-                { id: id, location: location }
-            ];
-            setLikedLocations(newLikedLocations);
-            localStorage.setItem('likedLocations', JSON.stringify(newLikedLocations));
-        } else {
-            const updatedLocations = likedLocations.filter((_, index) => index !== existingIndex);
-            setLikedLocations(updatedLocations);
-            localStorage.setItem('likedLocations', JSON.stringify(updatedLocations));
-        }
-    };
+        dispatch(toggleLikedLocation({ id: location.params.payload.city.id, location }));
+    };    
 
-    // Обработка нажатия на кнопку удаления карточки
+    // Функция удаления карточки
     const handleDelete = (e) => {
         e.preventDefault();
-        const itemID = location.params.meta.requestId;
-
-        // Удаляем карточку из Redux store
-        dispatch(deleteItemFromCart(itemID));
-
-        // Удаляем карточку из localStorage и из likedLocations
-        const updatedLikedLocations = likedLocations.filter((item) => item.id !== location.params.payload.city.id);
-        setLikedLocations(updatedLikedLocations);
-        localStorage.setItem('likedLocations', JSON.stringify(updatedLikedLocations));
+        dispatch(deleteItemFromCart(location.params.meta.requestId));
     };
 
     return (
@@ -61,8 +35,8 @@ const Item = ({ location, date, icon }) => {
                     <div id={location.params.payload.city.id} key={location.params.payload.city.id}>
                         <div className="item">
                             <div className="item_top">
-                                <button onClick={(e) => handleLike(e, location.params.payload.city.id)} className="ico-btn">
-                                    { likedLocations.some((item) => item.id === location.params.payload.city.id) ? (
+                                <button onClick={(e) => handleLike(e)} className="ico-btn">
+                                    {likedLocations?.some((item) => item.id === location.params.payload.city.id) ? (
                                         <FcLike />
                                     ) : (
                                         <IoHeartOutline />

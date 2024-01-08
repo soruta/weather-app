@@ -12,7 +12,8 @@ export const fetchWeather = createAsyncThunk(
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    itemsInCart: []
+    itemsInCart: [],
+    likedLocations: JSON.parse(localStorage.getItem('likedLocations')) || [] // Инициализация из localStorage
   },
   reducers: {
     addItemToCart: (state, action) => {
@@ -23,9 +24,29 @@ const cartSlice = createSlice({
     },
     deleteItemFromCart: (state, action) => {
       state.itemsInCart = state.itemsInCart.filter(item => item.params.meta.requestId !== action.payload);
+
+      // Удаление элемента из likedLocations
+      state.likedLocations = state.likedLocations.filter(item => item.location.params.meta.requestId !== action.payload);
+
+      // Обновление localStorage после удаления
+      localStorage.setItem('likedLocations', JSON.stringify(state.likedLocations));
+    },
+    toggleLikedLocation: (state, action) => {
+      const index = state.likedLocations.findIndex(item => item.id === action.payload.id);
+
+      if (index !== -1) {
+        // Удаляем карточку из списка лайкнутых
+        state.likedLocations.splice(index, 1);
+      } else {
+        // Добавляем карточку в список лайкнутых
+        state.likedLocations.push(action.payload);
+      }
+
+      // Сохранение в localStorage
+      localStorage.setItem('likedLocations', JSON.stringify(state.likedLocations));
     }
   }
 });
 
-export const { addItemToCart, deleteItemFromCart } = cartSlice.actions;
+export const { addItemToCart, deleteItemFromCart, toggleLikedLocation } = cartSlice.actions;
 export default cartSlice.reducer;

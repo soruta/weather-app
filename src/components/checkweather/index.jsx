@@ -37,18 +37,18 @@ function CheckWeather() {
   const data = useSelector(state => state.cart.itemsInCart);
   const date = new Date();
 
-  // При загрузке страницы добавляем лайкнутые карточки из localStorage в itemsInCart
+  // При загрузке страницы добавляем карточки из localStorage в itemsInCart
   useEffect(() => {
     const likedLocations = JSON.parse(localStorage.getItem('likedLocations')) || [];
     likedLocations.forEach((item) => {
       const existingItem = data.find((location) => location.params.payload.city.id === item.id);
       if (!existingItem) {
-        dispatch(addItemToCart(item.location)); // Добавляем данные карточки в itemsInCart, если их еще нет
+        dispatch(addItemToCart(item.location)); // Добавляем данные карточки в itemsInCart
       }
     });
   }, [data, dispatch]);
 
-  // Функция для получения типа погоды
+  // Функция получения типа погоды
   const getIcon = (location) => {
     if (location.params.payload.list) {
       return location.params.payload.list[0].weather[0].main;
