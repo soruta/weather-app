@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+
+$colors : (
+    "color-white"  : #ffffff,
+    "color-purple" : #9f69b7,
+    "color-blue"   : #327dcd
+);
+
+:root {
+    @each $key, $value in $colors {
+        --#{$key} : #{$value};
+    }
+}
+
+@function cl($name) {
+    @return var(--#{unquote($name)});
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style-type: none;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+html {
+    font-size: 10px;
+}
+
+body {
+    background-color: cl(color-white);
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    min-height: 100vh;
+}
+
+#root {
+    width: 100%;
+    margin: auto 0px;
+}
+
+.container {
+    width: 100%;
+    max-width: 160rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.spin {
+    width: 100%;
+    height: 100vh;
+    background: cl(color-purple);
+    background: linear-gradient(-30deg, cl(color-purple) 0%, cl(color-blue) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    &_animate {
+        font-size: 10rem;
+        color: cl(color-white);
+        animation: rotate 1s linear infinite;
+        transition: 0.5s;
+    }
+}

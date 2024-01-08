@@ -1,0 +1,289 @@
+$colors : (
+    "color-white"      : #ffffff,
+    "color-smoky"      : #f5f5f5,
+    "color-gray"       : #dddddd,
+    "color-yellow"     : #ffde33,
+    "color-purple"     : #9f69b7,
+    "color-elis"       : #e7eeff,
+    "color-cornflower" : #b8c9f1,
+    "color-blue"       : #327dcd,
+    "color-blue-white" : #31cafb,
+    "color-blue-dark"  : #0a035d,
+    "color-black"      : #000000,
+
+    "color-icon"       : #9ca0dd,
+    "color-hot"        : #ff9979,
+    "color-cold"       : #79a1ff
+);
+
+:root {
+    @each $key, $value in $colors {
+        --#{$key} : #{$value};
+    }
+}
+
+@function cl($name, $opacity: false) {
+    @if $opacity {
+        $color: map-get($colors, $name);
+        @return rgba($color, $opacity);
+    } @else {
+        @return var(--#{unquote($name)});;
+    }
+}
+
+.app_detail {
+    background: cl(color-purple);
+    background: linear-gradient(-30deg, cl(color-purple) 0%, cl(color-blue) 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(1rem + 2vmin);
+
+    h2 {
+        font-size: 2.5rem;
+        color: cl(color-elis);
+        font-weight: 300;
+    }
+
+    .container {
+        max-width: 100rem;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            font-size: calc(1rem + 2vmin);
+            color: cl(color-smoky);
+            margin: 2rem 0;
+            gap: 2rem;
+
+            &_top {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                background: cl(color-black, 0.1);
+                border-radius: .8rem;
+                overflow: hidden;
+                border: 1px solid cl(color-black, 0.025);
+                gap: 2rem;
+
+                .image {
+                    order: 1;
+                    line-height: 0;
+
+                    img {
+                        height: 100%;
+                        width: 100%;
+                        object-fit: cover;
+                    }
+                }
+
+                .location {
+                    order: 2;
+                    min-width: 25rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                    flex-direction: column;
+                    color: cl(color-elis);
+                    flex: 1;
+                    padding: 2rem 0;
+                    gap: 2rem;
+
+                    &_name {
+                        font-size: 3rem;
+                        color: cl(color-white);
+                    }
+
+                    &_content {
+                        display: flex;
+                        align-items: center;
+                        gap: 2rem;
+                    }
+
+                    &_icon {
+                        font-size: 8rem;
+                        line-height: 0;
+                    }
+
+                    &_temp {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        &_num {
+                            font-size: 7rem;
+                            line-height: 1;
+
+                            &_icon {
+                                font-size: 3rem;
+                                line-height: 1;
+                                color: cl(color-white);
+                            }
+                        }
+                    }
+
+                    &_description {
+                        font-size: 2rem;
+                        text-align: center;
+                        color: cl(color-white);
+
+                        &::first-letter {
+                            text-transform: uppercase;
+                        }
+                    }
+                }
+
+                .extra {
+                    order: 3;
+                    min-width: 25rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                    flex-direction: column;
+                    color: cl(color-elis);
+                    flex: 1;
+                    padding: 2rem 0;
+                    gap: 2rem;
+
+                    &_text {
+                        font-size: 2.25rem;
+                    }
+
+                    &_bar {
+                        display: flex;
+                        margin-bottom: 2rem;
+                        gap: 2rem;
+
+                        .bar_item {
+                            display: flex;
+                            gap: 1rem;
+
+                            &_icon {
+                                font-size: 2.2rem;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+
+                                &.hot {
+                                    color: cl(color-hot);
+                                }
+
+                                &.cold {
+                                    color: cl(color-cold);
+                                }
+                            }
+
+                            &_temp {
+                                font-size: 2.2rem;
+                            }
+                        }
+                    }
+
+                    &_info {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1rem;
+
+                        .info_item {
+                            display: flex;
+                            gap: 1rem;
+
+                            &_icon {
+                                font-size: 1.8rem;
+                                color: cl(color-icon);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+
+                            &_text {
+                                display: flex;
+                                font-size: 1.8rem;
+                                gap: 1rem;
+
+                                span {
+                                    color: cl(color-cornflower);
+                                    font-weight: 700;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &_bottom {
+                width: 100%;
+
+                &_blocks {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 1.5rem;
+
+                    .block {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: column;
+                        flex: 1 1;
+                        min-width: 20rem;
+                        border: 1px solid cl(color-black, 0.05);
+                        box-sizing: border-box;
+                        text-align: center;
+                        padding: 1.5rem;
+                        background: cl(color-black, 0.2);
+                        border-radius: 8px;
+                        gap: 1rem;
+
+                        &_title {
+                            font-size: 2.2rem;
+                        }
+
+                        &_icon {
+                            font-size: 5rem;
+                            line-height: 0;
+                        }
+
+                        &_temp {
+                            line-height: 1;
+                            span {
+                                font-size: .8em;
+                            }
+                        }
+
+                        &_description {
+                            font-size: 1.6rem;
+                            text-align: center;
+
+                            &::first-letter {
+                                text-transform: uppercase;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(-360deg);
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .app_detail {
+        .container {
+            .content {
+                &_top {
+                    .image {
+                        width: 100%;
+                        height: 20rem;
+                    }
+                }
+            }
+        }
+    }  
+}

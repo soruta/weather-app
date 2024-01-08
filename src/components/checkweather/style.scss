@@ -1,0 +1,47 @@
+$colors : (
+    "color-gray"       : #dddddd,
+    "color-yellow"     : #ffde33,
+    "color-purple"     : #9f69b7,
+    "color-blue"       : #327dcd,
+    "color-blue-white" : #31cafb,
+    "color-blue-dark"  : #0a035d,
+    "color-black"      : #000000
+);
+
+:root {
+    @each $key, $value in $colors {
+        --#{$key} : #{$value};
+    }
+}
+
+@function cl($name) {
+    @return var(--#{unquote($name)});
+}
+
+.color-yellow { color: cl(color-yellow); }
+.color-blue { color: cl(color-blue-white); }
+.color-dark-blue { color: cl(color-blue-dark); }
+.color-gray { color: cl(color-gray); }
+
+.app {
+    background: cl(color-purple);
+    background: linear-gradient(-30deg, cl(color-purple) 0%, cl(color-blue) 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(1rem + 2vmin);
+    color: cl(color-black);
+
+    &_block {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+        max-width: calc(30rem * 5 + 4rem);
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+}
